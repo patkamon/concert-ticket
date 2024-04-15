@@ -10,9 +10,16 @@ export class ConcertService {
     @InjectRepository(Concert) private concertRepository: Repository<Concert>,
   ) {}
 
-  createConcert(createConcertDto: CreateConcertParams) {
+  async createConcert(createConcertDto: CreateConcertParams) {
     const newConcert = this.concertRepository.create({ ...createConcertDto });
+    return await this.concertRepository.save(newConcert);
+  }
 
-    return this.concertRepository.save(newConcert);
+  async DeleteConcertById(id: number) {
+    const toDeleteConcert = await this.concertRepository.findOneBy({ id: id });
+    if (toDeleteConcert == null) {
+      return null;
+    }
+    return await this.concertRepository.remove(toDeleteConcert);
   }
 }

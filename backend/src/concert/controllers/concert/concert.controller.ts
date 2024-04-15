@@ -6,6 +6,7 @@ import {
   Headers,
   HttpException,
   HttpStatus,
+  Param,
   Post,
 } from '@nestjs/common';
 import { CreateConcertDto } from 'src/concert/dtos/CreateConcert.dto';
@@ -28,14 +29,22 @@ export class ConcertController {
   ) {
     // check if role is admin
     if (headers.role !== 'Admin') {
-      console.log(headers);
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
     this.concertService.createConcert(createConcertDto);
   }
 
-  @Delete() // delete concert
-  deleteConcert() {}
+  @Delete(':id') // delete concert
+  async deleteConcert(@Headers() headers, @Param('id') id: number) {
+    // check if role is admin
+    if (headers.role !== 'Admin') {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+    const response = await this.concertService.DeleteConcertById(id);
+    if (response == null) {
+      throw new HttpException('Concert ID not found', HttpStatus.NOT_FOUND);
+    }
+  }
 
   @Get() // get all reservation historu
   getReservationHistory() {}
