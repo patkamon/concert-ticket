@@ -20,7 +20,7 @@ export class Concert {
   @Column()
   seat: number;
 
-  @Column()
+  @Column({ default: 0 })
   createBy: number;
 
   @CreateDateColumn()
