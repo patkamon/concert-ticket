@@ -33,8 +33,51 @@ export class ConcertService {
     return await this.concertRepository.remove(toDeleteConcert);
   }
 
-  async FetchAllConcert() {
-    return await this.concertRepository.find();
+  async FetchAllConcertAdminPov(adminId: number) {
+    const entities = await this.concertRepository.find();
+
+    entities.forEach((entity) => {
+      entity.isOwner = entity.createBy == adminId;
+    });
+    return entities;
+  }
+
+  async FetchAllConcertUserPov(userId: number) {
+    const query = `
+      SELECT concertId
+      FROM reservation r
+      WHERE r.status = "RESERVED" AND r.reserverId = ${userId}
+      AND r.concertId IN (
+          SELECT DISTINCT concertId
+          FROM reservation
+          WHERE reserverId = ${userId}
+      )
+      AND r.created_at = (
+          SELECT MAX(created_at)
+          FROM reservation
+          WHERE reserverId = ${userId}
+          AND concertId = r.concertId
+      );
+    `;
+
+    const rows = await this.reservationRepository.query(query);
+    const result: { [key: number]: null } = {};
+
+    rows.forEach((row: { concertId: number }) => {
+      result[String(row.concertId)] = 'reserved';
+    });
+
+    const entities = await this.concertRepository.find();
+
+    entities.forEach((entity) => {
+      if (result[String(entity.id)] == 'reserved') {
+        entity.IsReserve = true;
+      } else {
+        entity.IsReserve = false;
+      }
+    });
+
+    return entities;
   }
 
   async FetchAllReservationById(id: number) {

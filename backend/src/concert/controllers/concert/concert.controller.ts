@@ -18,8 +18,16 @@ export class ConcertController {
   constructor(private concertService: ConcertService) {}
 
   @Get() // getAllConcert
-  getAllConcert() {
-    return this.concertService.FetchAllConcert();
+  getAllConcert(@Headers() headers) {
+    if (headers.role == 'User') {
+      return this.concertService.FetchAllConcertUserPov(0); // TODO: pass userId
+    } else if (headers.role == 'Admin') {
+      return this.concertService.FetchAllConcertAdminPov(0); // TODO: pass userId
+    }
+    throw new HttpException(
+      'Only User/Admin allow to access this endpoint',
+      HttpStatus.FORBIDDEN,
+    );
   }
 
   @Post('reserve') // reserve/ cancel concert
@@ -72,7 +80,7 @@ export class ConcertController {
     if (headers.role == 'Admin') {
       return this.concertService.FetchAllReservation();
     } else if (headers.role == 'User') {
-      return this.concertService.FetchAllReservationById(0);
+      return this.concertService.FetchAllReservationById(0); // TODO: pass userId
     }
     throw new HttpException(
       'Only User/Admin allow to access this endpoint',

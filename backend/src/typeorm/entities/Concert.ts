@@ -28,4 +28,6 @@ export class Concert {
 
   @UpdateDateColumn()
   updated_at: Date; // Last updated date
+  IsReserve: boolean;
+  isOwner: boolean;
 }

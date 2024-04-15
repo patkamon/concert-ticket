@@ -6,6 +6,7 @@ export type CreateConcertParams = {
 
 export type CreateReservationParams = {
   concertId: number;
+  reserverId: number;
   status?: ReserveStatus;
 };
 
