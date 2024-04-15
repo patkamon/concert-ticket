@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Concert } from './typeorm/entities/Concert';
+import { ConcertModule } from './concert/concert.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Concert } from './typeorm/entities/Concert';
       entities: [Concert],
       synchronize: true,
     }),
+    ConcertModule,
   ],
   controllers: [AppController],
   providers: [AppService],
