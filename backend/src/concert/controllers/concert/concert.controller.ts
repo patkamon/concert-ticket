@@ -31,7 +31,7 @@ export class ConcertController {
   }
 
   @Post('reserve') // reserve/ cancel concert
-  reserveConcert(
+  async reserveConcert(
     @Headers() headers,
     @Body() createReservationDto: CreateReservationDto,
   ) {
@@ -43,7 +43,16 @@ export class ConcertController {
       );
     }
     createReservationDto.reserverId = 0; // TODO: pass userId
-    this.concertService.createReservation(createReservationDto);
+    try {
+      const res =
+        await this.concertService.createReservation(createReservationDto);
+      return res;
+    } catch (e) {
+      throw new HttpException(
+        'Not Found concert to reserve',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   @Post('create') // create concert

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Concert } from 'src/typeorm/entities/Concert';
 import { Reservation } from 'src/typeorm/entities/Reservation';
@@ -95,7 +95,10 @@ export class ConcertService {
     // concert notfound
     if (!toReserveConcert) {
       //TODO: ERROR HANDLING
-      return null;
+      throw new NotFoundException(
+        `Entity with ID ${createReservationDto.concertId} not found`,
+      );
+      // return null;
     }
     // check for cancel
     const findReservation = await this.reservationRepository.findOne({
