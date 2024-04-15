@@ -42,6 +42,7 @@ export class ConcertController {
         HttpStatus.FORBIDDEN,
       );
     }
+    createReservationDto.reserverId = 0; // TODO: pass userId
     this.concertService.createReservation(createReservationDto);
   }
 

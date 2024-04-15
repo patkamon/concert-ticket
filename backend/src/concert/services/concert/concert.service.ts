@@ -99,7 +99,10 @@ export class ConcertService {
     }
     // check for cancel
     const findReservation = await this.reservationRepository.findOne({
-      where: [{ reserverId: 0 }, { concertId: createReservationDto.concertId }],
+      where: [
+        { reserverId: createReservationDto.reserverId },
+        { concertId: createReservationDto.concertId },
+      ],
       order: { created_at: 'DESC' },
     });
     // if not reserve before or already canceled then reserve
