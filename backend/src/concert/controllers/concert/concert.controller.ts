@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -30,7 +31,7 @@ export class ConcertController {
     );
   }
 
-  @Post('reserve') // reserve/ cancel concert
+  @Post('reserve') // reserve/cancel concert
   async reserveConcert(
     @Headers() headers,
     @Body() createReservationDto: CreateReservationDto,
@@ -42,6 +43,12 @@ export class ConcertController {
         HttpStatus.FORBIDDEN,
       );
     }
+
+    // Validation input body
+    if (!createReservationDto.concertId) {
+      throw new BadRequestException('Validation failed: No concertId');
+    }
+
     createReservationDto.reserverId = 0; // TODO: pass userId
     try {
       const res =
@@ -68,6 +75,20 @@ export class ConcertController {
         HttpStatus.FORBIDDEN,
       );
     }
+
+    // Validation input body
+    if (!createConcertDto.name) {
+      throw new BadRequestException('Validation failed: No name specify');
+    }
+    if (!createConcertDto.description) {
+      throw new BadRequestException(
+        'Validation failed: No description specify',
+      );
+    }
+    if (!createConcertDto.seat) {
+      throw new BadRequestException('Validation failed: No seat specify');
+    }
+
     this.concertService.createConcert(createConcertDto);
   }
 
