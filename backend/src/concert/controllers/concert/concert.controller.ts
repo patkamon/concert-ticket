@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateConcertDto } from 'src/concert/dtos/CreateConcert.dto';
+import { CreateReservationDto } from 'src/concert/dtos/CreateReservation.dto';
 import { ConcertService } from 'src/concert/services/concert/concert.service';
 
 @Controller('concert')
@@ -17,10 +18,24 @@ export class ConcertController {
   constructor(private concertService: ConcertService) {}
 
   @Get() // getAllConcert
-  getAllConcert() {}
+  getAllConcert() {
+    return this.concertService.FetchAllConcert();
+  }
 
-  @Post() // reserve/ cancel concert
-  reserveConcert() {}
+  @Post('reserve') // reserve/ cancel concert
+  reserveConcert(
+    @Headers() headers,
+    @Body() createReservationDto: CreateReservationDto,
+  ) {
+    // check if role is user
+    if (headers.role !== 'User') {
+      throw new HttpException(
+        'Only user can make reservation',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    this.concertService.createReservation(createReservationDto);
+  }
 
   @Post('create') // create concert
   createConcert(
@@ -29,16 +44,22 @@ export class ConcertController {
   ) {
     // check if role is admin
     if (headers.role !== 'Admin') {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        'Only Admin allow to access this endpoint',
+        HttpStatus.FORBIDDEN,
+      );
     }
     this.concertService.createConcert(createConcertDto);
   }
 
-  @Delete(':id') // delete concert
+  @Delete('/delete/:id') // delete concert
   async deleteConcert(@Headers() headers, @Param('id') id: number) {
     // check if role is admin
     if (headers.role !== 'Admin') {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        'Only Admin allow to access this endpoint',
+        HttpStatus.FORBIDDEN,
+      );
     }
     const response = await this.concertService.DeleteConcertById(id);
     if (response == null) {

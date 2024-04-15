@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Concert } from './typeorm/entities/Concert';
 import { ConcertModule } from './concert/concert.module';
+import { Reservation } from './typeorm/entities/Reservation';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { ConcertModule } from './concert/concert.module';
       username: 'root',
       password: 'password', // YOURPASSWORD
       database: 'test',
-      entities: [Concert],
+      entities: [Concert, Reservation],
       synchronize: true,
     }),
     ConcertModule,
