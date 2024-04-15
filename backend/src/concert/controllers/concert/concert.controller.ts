@@ -48,6 +48,7 @@ export class ConcertController {
         await this.concertService.createReservation(createReservationDto);
       return res;
     } catch (e) {
+      console.log(e);
       throw new HttpException(
         'Not Found concert to reserve',
         HttpStatus.NOT_FOUND,
@@ -79,8 +80,11 @@ export class ConcertController {
         HttpStatus.FORBIDDEN,
       );
     }
-    const response = await this.concertService.DeleteConcertById(id);
-    if (response == null) {
+    try {
+      const response = await this.concertService.DeleteConcertById(id);
+      return response;
+    } catch (e) {
+      console.log(e);
       throw new HttpException('Concert ID not found', HttpStatus.NOT_FOUND);
     }
   }

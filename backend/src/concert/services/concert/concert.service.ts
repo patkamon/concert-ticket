@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Concert } from 'src/typeorm/entities/Concert';
 import { Reservation } from 'src/typeorm/entities/Reservation';
@@ -26,9 +30,7 @@ export class ConcertService {
     const toDeleteConcert = await this.concertRepository.findOneBy({ id: id });
     // concert notfound
     if (!toDeleteConcert) {
-      //TODO: ERROR HANDLING
-
-      return null;
+      throw new NotFoundException(`Entity with ID ${id} not found`);
     }
     return await this.concertRepository.remove(toDeleteConcert);
   }
@@ -94,11 +96,9 @@ export class ConcertService {
     });
     // concert notfound
     if (!toReserveConcert) {
-      //TODO: ERROR HANDLING
       throw new NotFoundException(
         `Entity with ID ${createReservationDto.concertId} not found`,
       );
-      // return null;
     }
     // check for cancel
     const findReservation = await this.reservationRepository.findOne({
@@ -126,6 +126,8 @@ export class ConcertService {
       });
       return await this.reservationRepository.save(newReservation);
     }
-    //TODO: ERROR HANDLING
+    throw new NotAcceptableException(
+      `There something wrong with ${createReservationDto}`,
+    );
   }
 }
