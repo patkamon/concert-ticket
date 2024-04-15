@@ -67,6 +67,16 @@ export class ConcertController {
     }
   }
 
-  @Get() // get all reservation historu
-  getReservationHistory() {}
+  @Get('history') // get all reservation historu
+  getReservationHistory(@Headers() headers) {
+    if (headers.role == 'Admin') {
+      return this.concertService.FetchAllReservation();
+    } else if (headers.role == 'User') {
+      return this.concertService.FetchAllReservationById(0);
+    }
+    throw new HttpException(
+      'Only User/Admin allow to access this endpoint',
+      HttpStatus.FORBIDDEN,
+    );
+  }
 }

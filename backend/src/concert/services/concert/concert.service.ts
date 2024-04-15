@@ -37,6 +37,14 @@ export class ConcertService {
     return await this.concertRepository.find();
   }
 
+  async FetchAllReservationById(id: number) {
+    return await this.reservationRepository.findBy({ reserverId: id });
+  }
+
+  async FetchAllReservation() {
+    return await this.reservationRepository.find();
+  }
+
   async createReservation(createReservationDto: CreateReservationParams) {
     const toReserveConcert = await this.concertRepository.findOneBy({
       id: createReservationDto.concertId,
