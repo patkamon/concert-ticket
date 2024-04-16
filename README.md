@@ -2,7 +2,8 @@
 # CONCERT RESERVATION
 
 
-# Installment
+# Installment  
+ - both using node version 18.19.0 (nvm use 18.19.0)
  - navigate to backend using `cd ./backend` command
  - run `npm i`
  - Configure your user and password of mysql in `app.module.ts`
