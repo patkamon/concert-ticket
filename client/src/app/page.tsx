@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import Panel from "../components/Panel";
 import Sidebar from "../components/Sidebar";
 import { DefaultApiFactory } from "../../client";
-import { headers } from "next/headers";
+
+
+
 
 export default function Home() {
   const [selectOverview, setSelectOverview] = useState(true);
@@ -24,7 +26,7 @@ export default function Home() {
 
   return (
     <div className="flex w-screen">
-      <Sidebar role={role} />
+      <Sidebar role={role} setRole={setRole} />
       <div className="flex flex-col w-full mx-10 mt-10">
         <div className="flex justify-between bg-blue-300 w-full">
           <Panel />
@@ -59,21 +61,53 @@ export default function Home() {
                 <p>{c.desc}</p>
                 <div className="flex justify-between">
                   {c.seat}
-                  <button
-                    className="bg-red-400"
-                    onClick={() => {
-                      console.log(c.id);
-                      caller.concertControllerDeleteConcert(c.id, {
-                        headers: { Role: role },
-                      }).then(()=>{
-                        const newConcerts = concerts.filter((con) => con.id !== c.id)
-                        console.log(newConcerts)
-                        setConcerts(newConcerts);
-                      });
-                    }}
-                  >
-                    Delete
-                  </button>
+                  {c.isOwner && (
+                    <button
+                      className="bg-red-400"
+                      onClick={() => {
+                        console.log(c.id);
+                        caller
+                          .concertControllerDeleteConcert(c.id, {
+                            headers: { Role: role },
+                          })
+                          .then(() => {
+                            const newConcerts = concerts.filter(
+                              (con) => con.id !== c.id
+                            );
+                            console.log(newConcerts);
+                            setConcerts(newConcerts);
+                          });
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+
+                  {(c.IsReserve == true || c.IsReserve == false) && (
+                    <button
+                      className={c.IsReserve ? "bg-red-400" : "bg-green-300"}
+                      onClick={() => {
+                        caller
+                          .concertControllerReserveConcert(
+                            {
+                              concertId: c.id,
+                            },
+                            { headers: { Role: role } }
+                          )
+                          .then((d) => {
+                            const newConcerts = concerts;
+                            newConcerts.forEach((con) => {
+                              if (c.id == con.id) {
+                                con.IsReserve = !con.IsReserve;
+                              }
+                            });
+                            setConcerts([...newConcerts]);
+                          });
+                      }}
+                    >
+                      {c.IsReserve ? "Cancel" : "Reserve"}
+                    </button>
+                  )}
                 </div>
               </div>
             );

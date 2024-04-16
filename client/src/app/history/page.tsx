@@ -1,28 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DefaultApiFactory } from "../../../client";
 import Sidebar from "@/components/Sidebar";
 
 export default function History() {
-  const [selectOverview, setSelectOverview] = useState(true);
   const [role, setRole] = useState<String>("Admin");
-  const [concerts, setConcerts] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([])
 
   const caller = DefaultApiFactory();
 
   useEffect(() => {
     caller
-      .concertControllerGetAllConcert({ headers: { Role: role } })
-      .then((d) => {
-        console.log(d.data);
-        setConcerts(d.data!);
-      });
+      .concertControllerGetReservationHistory(
+      { headers: { Role: role } }
+      ).then((d)=>{
+        console.log(d.data!)
+        setHistory([...d.data!].reverse())
+      })
   }, [role]);
+
+  
 
   return (
     <div className="flex w-screen">
-      <Sidebar role={role} />
+      <Sidebar role={role} setRole={setRole} />
       <div className="flex flex-col w-full mx-10 mt-10">
         <table className="[&_*]:border-2 [&_*]:border-black">
           <thead>
@@ -34,13 +36,17 @@ export default function History() {
             </tr>
           </thead>
           <tbody>
-            {/* <!-- Table rows will go here --> */}
-            <tr>
-              <td>2024-04-15</td>
-              <td>JohnDoe</td>
-              <td>Concert A</td>
-              <td></td>
-            </tr>
+            {history.map((h)=>{
+              return (
+                <tr>
+                <td className="text-center">{h.created_at}</td>
+                <td className="text-center">John doe</td>
+                <td className="text-center">{h.concertId}</td>
+                <td className="text-center">{h.status}</td>
+              </tr>
+              )
+            })}
+          
           </tbody>
         </table>
       </div>
