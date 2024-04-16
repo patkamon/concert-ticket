@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import Panel from "./components/Panel";
-import Sidebar from "./components/Sidebar";
+import { useEffect, useState } from "react";
+import Panel from "../components/Panel";
+import Sidebar from "../components/Sidebar";
+import {  DefaultApiFactory } from "../../client";
+import { headers } from "next/headers";
 
 export default function Home() {
   const [selectOverview, setSelectOverview] = useState(true);
+  const [role, setRole] = useState<String>("Admin");
+
+
+  useEffect(()=>{
+    const caller = DefaultApiFactory()
+    caller.concertControllerGetAllConcert({headers: {"Role": role}}).then((d)=>{
+      console.log(d)
+    })
+  })
 
   return (
     <div className="flex w-screen">
-      <Sidebar />
+      <Sidebar role={role} />
       <div className="flex flex-col w-full mx-10 mt-10">
         <div className="flex justify-between bg-blue-300 w-full">
           <Panel />
