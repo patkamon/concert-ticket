@@ -59,11 +59,18 @@ export default function Home() {
                 <p>{c.desc}</p>
                 <div className="flex justify-between">
                   {c.seat}
-                  <button className="bg-red-400" onClick={()=>{
-                    console.log(c.id)
-                    caller.concertControllerDeleteConcert(c.id, { headers: { Role: role } })
-                    setRole(role)
-                  }}>Delete</button>
+                  <button
+                    className="bg-red-400"
+                    onClick={() => {
+                      console.log(c.id);
+                      caller.concertControllerDeleteConcert(c.id, {
+                        headers: { Role: role },
+                      });
+                      setRole(role);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             );
@@ -72,20 +79,46 @@ export default function Home() {
           <div className="w-full bg-yellow-200 py-10 my-2 flex flex-col p-4">
             Create
             <span className="border-b border-gray-300 w-full"></span>
-            <form>
+            <form
+              onSubmit={(e) => {
+                const form = e.target as any;
+                caller.concertControllerCreateConcert(
+                  {
+                    name: form[0].value,
+                    seat: form[1].value,
+                    description: form[2].value,
+                  },
+                  { headers: { Role: role } }
+                );
+              }}
+            >
               <div className="flex justify-between gap-4">
                 <div className="w-full">
                   <label htmlFor="name">Concert Name</label>
-                  <input className="w-full" id="name"></input>
+                  <input className="w-full" required id="name"></input>
                 </div>
                 <div className="w-full">
                   <label htmlFor="seat">Seat</label>
-                  <input className="w-full" id="seat" type="number"></input>
+                  <input
+                    className="w-full"
+                    type="number"
+                    min="0"
+                    max="10000"
+                    step="1"
+                    required
+                    id="seat"
+                  ></input>
                 </div>
               </div>
 
               <label htmlFor="description">Description</label>
-              <textarea className="w-full" id="description"></textarea>
+              <textarea className="w-full" required id="description"></textarea>
+
+              <div className="bg-orange-300 flex flex-row-reverse">
+                <button type="submit" className="bg-blue-400  px-10">
+                  Save
+                </button>
+              </div>
             </form>
           </div>
         )}
