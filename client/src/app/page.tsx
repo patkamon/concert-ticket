@@ -65,8 +65,11 @@ export default function Home() {
                       console.log(c.id);
                       caller.concertControllerDeleteConcert(c.id, {
                         headers: { Role: role },
+                      }).then(()=>{
+                        const newConcerts = concerts.filter((con) => con.id !== c.id)
+                        console.log(newConcerts)
+                        setConcerts(newConcerts);
                       });
-                      setRole(role);
                     }}
                   >
                     Delete
