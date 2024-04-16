@@ -3,20 +3,24 @@
 import { useEffect, useState } from "react";
 import Panel from "../components/Panel";
 import Sidebar from "../components/Sidebar";
-import {  DefaultApiFactory } from "../../client";
+import { DefaultApiFactory } from "../../client";
 import { headers } from "next/headers";
 
 export default function Home() {
   const [selectOverview, setSelectOverview] = useState(true);
   const [role, setRole] = useState<String>("Admin");
+  const [concerts, setConcerts] = useState<any[]>([]);
 
+  const caller = DefaultApiFactory();
 
-  useEffect(()=>{
-    const caller = DefaultApiFactory()
-    caller.concertControllerGetAllConcert({headers: {"Role": role}}).then((d)=>{
-      console.log(d)
-    })
-  })
+  useEffect(() => {
+    caller
+      .concertControllerGetAllConcert({ headers: { Role: role } })
+      .then((d) => {
+        console.log(d.data);
+        setConcerts(d.data!);
+      });
+  }, [role]);
 
   return (
     <div className="flex w-screen">
@@ -44,15 +48,26 @@ export default function Home() {
         </div>
 
         {selectOverview ? (
-          <div className="w-full bg-teal-200 py-10 my-2 p-4 flex flex-col">
-            Concert name 1
-            <span className="border-b border-gray-300 w-full"></span>
-            <p>desc</p>
-            <div className="flex justify-between">
-              Seat
-              <button className="bg-red-400">Delete</button>
-            </div>
-          </div>
+          concerts.map((c) => {
+            return (
+              <div
+                key={c.id}
+                className="w-full bg-teal-200 py-10 my-2 p-4 flex flex-col"
+              >
+                {c.name}
+                <span className="border-b border-gray-300 w-full"></span>
+                <p>{c.desc}</p>
+                <div className="flex justify-between">
+                  {c.seat}
+                  <button className="bg-red-400" onClick={()=>{
+                    console.log(c.id)
+                    caller.concertControllerDeleteConcert(c.id, { headers: { Role: role } })
+                    setRole(role)
+                  }}>Delete</button>
+                </div>
+              </div>
+            );
+          })
         ) : (
           <div className="w-full bg-yellow-200 py-10 my-2 flex flex-col p-4">
             Create
