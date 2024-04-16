@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DefaultApiFactory } from "../../../client";
 import Sidebar from "@/components/Sidebar";
 

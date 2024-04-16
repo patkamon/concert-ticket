@@ -16,7 +16,7 @@ export default function Sidebar({
   return (
     <div className="h-screen sticky top-0 bg-white border-r border-gray-200 w-1/6 min-w-[100px] flex flex-col gap-4 justify-between">
       <div className="flex flex-col mx-4">
-        <span className="font-semibold text-3xl mx-auto my-10">{role}</span>
+        <span className="font-semibold xl:text-3xl text-xl mx-auto my-10">{role}</span>
 
         {role == "Admin" && (
           <Link

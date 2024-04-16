@@ -23,7 +23,7 @@ export default function Home() {
   }, [role]);
 
   return (
-    <div className="flex w-screen bg-gray-50">
+    <div className="flex bg-gray-50">
       <Sidebar
         role={role}
         setRole={setRole}
@@ -131,7 +131,7 @@ export default function Home() {
                 );
               }}
             >
-              <div className="flex justify-between gap-4  py-4">
+              <div className="flex justify-between gap-4 py-4 items-end">
                 <div className="w-full">
                   <label className="text-xl mt-4" htmlFor="name">
                     Concert Name
