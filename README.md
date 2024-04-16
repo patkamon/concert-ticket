@@ -38,3 +38,15 @@ The project consist of 2 models.
 
 # Run unit test
  cd to backend directory and run `npm test`
+
+# Bonus Task (Optional)
+● Q: Express your opinion about how to optimize your website in case that this
+website contains intensive data and when more people access, the lower speed
+you get?    
+                
+       A: Create Loadbalancer, deploy multiple instances and do database index.   
+● Express your opinion about how to handle when many users want to reserve the
+ticket at the same time? We want to ensure that in the concerts there is no one
+that needs to stand up during the show.
+
+       A: Using message queue can helps manage the flow of requests and prevents overwhelming the system, such as rabbitMQ, kafka, aws sqs, etc.
