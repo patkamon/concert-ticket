@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Panel from "../components/Panel";
 import Sidebar from "../components/Sidebar";
 import { DefaultApiFactory } from "../../client";
+import Swal from "sweetalert2";
 
 export default function Home() {
   const [selectOverview, setSelectOverview] = useState(true);
@@ -36,13 +37,17 @@ export default function Home() {
         {role == "Admin" && (
           <div className="w-full flex py-5 gap-4 text-xl">
             <button
-              className={selectOverview ? "border-b-2 border-blue-500 text-blue-500" : ""}
+              className={
+                selectOverview ? "border-b-2 border-blue-500 text-blue-500" : ""
+              }
               onClick={() => setSelectOverview(true)}
             >
               Overview
             </button>
             <button
-              className={selectOverview ? "" : "border-b-2 border-blue-500 text-blue-500"}
+              className={
+                selectOverview ? "" : "border-b-2 border-blue-500 text-blue-500"
+              }
               onClick={() => setSelectOverview(false)}
             >
               Create
@@ -66,18 +71,35 @@ export default function Home() {
                     <button
                       className="bg-red-400 py-2 px-8 text-white rounded-sm"
                       onClick={() => {
-                        console.log(c.id);
-                        caller
-                          .concertControllerDeleteConcert(c.id, {
-                            headers: { Role: role },
-                          })
-                          .then(() => {
-                            const newConcerts = concerts.filter(
-                              (con) => con.id !== c.id
-                            );
-                            console.log(newConcerts);
-                            setConcerts(newConcerts);
-                          });
+                        Swal.fire({
+                          title: "Are you sure?",
+                          text: "You won't be able to revert this!",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#3085d6",
+                          cancelButtonColor: "#d33",
+                          confirmButtonText: "Yes, delete it!",
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            Swal.fire({
+                              title: "Deleted!",
+                              text: "Your file has been deleted.",
+                              icon: "success",
+                            });
+                            console.log(c.id);
+                            caller
+                              .concertControllerDeleteConcert(c.id, {
+                                headers: { Role: role },
+                              })
+                              .then(() => {
+                                const newConcerts = concerts.filter(
+                                  (con) => con.id !== c.id
+                                );
+                                console.log(newConcerts);
+                                setConcerts(newConcerts);
+                              });
+                          }
+                        });
                       }}
                     >
                       Delete
