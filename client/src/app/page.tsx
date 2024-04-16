@@ -5,12 +5,10 @@ import Panel from "../components/Panel";
 import Sidebar from "../components/Sidebar";
 import { DefaultApiFactory } from "../../client";
 
-
-
-
 export default function Home() {
   const [selectOverview, setSelectOverview] = useState(true);
-  const [role, setRole] = useState<String>("Admin");
+  const [selectHome, setSelectHome] = useState<boolean>(true);
+  const [role, setRole] = useState<String>("User");
   const [concerts, setConcerts] = useState<any[]>([]);
 
   const caller = DefaultApiFactory();
@@ -25,45 +23,48 @@ export default function Home() {
   }, [role]);
 
   return (
-    <div className="flex w-screen">
-      <Sidebar role={role} setRole={setRole} />
+    <div className="flex w-screen bg-gray-50">
+      <Sidebar
+        role={role}
+        setRole={setRole}
+        selectHome={selectHome}
+        setSelectHome={Home}
+      />
       <div className="flex flex-col w-full mx-10 mt-10">
-        <div className="flex justify-between bg-blue-300 w-full">
-          <Panel />
-          <Panel />
-          <Panel />
-        </div>
+        {role == "Admin" && <Panel />}
 
-        <div className="w-full flex py-5 gap-4">
-          <button
-            className="border-b-2 border-blue-500"
-            onClick={() => setSelectOverview(true)}
-          >
-            Overview
-          </button>
-          <button
-            className="border-b-2 border-blue-500"
-            onClick={() => setSelectOverview(false)}
-          >
-            Create
-          </button>
-        </div>
+        {role == "Admin" && (
+          <div className="w-full flex py-5 gap-4 text-xl">
+            <button
+              className={selectOverview ? "border-b-2 border-blue-500 text-blue-500" : ""}
+              onClick={() => setSelectOverview(true)}
+            >
+              Overview
+            </button>
+            <button
+              className={selectOverview ? "" : "border-b-2 border-blue-500 text-blue-500"}
+              onClick={() => setSelectOverview(false)}
+            >
+              Create
+            </button>
+          </div>
+        )}
 
         {selectOverview ? (
           concerts.map((c) => {
             return (
               <div
                 key={c.id}
-                className="w-full bg-teal-200 py-10 my-2 p-4 flex flex-col"
+                className="w-full bg-white rounded-md border border-gray-200 py-10 my-2 px-8 flex flex-col"
               >
-                {c.name}
+                <h1 className="text-3xl text-blue-500 mb-6">{c.name}</h1>
                 <span className="border-b border-gray-300 w-full"></span>
-                <p>{c.desc}</p>
-                <div className="flex justify-between">
-                  {c.seat}
+                <p className="my-2"> {c.description}</p>
+                <div className="flex justify-between items-center">
+                  <p>👤 {c.seat}</p>
                   {c.isOwner && (
                     <button
-                      className="bg-red-400"
+                      className="bg-red-400 py-2 px-8 text-white rounded-sm"
                       onClick={() => {
                         console.log(c.id);
                         caller
@@ -82,10 +83,11 @@ export default function Home() {
                       Delete
                     </button>
                   )}
-
                   {(c.IsReserve == true || c.IsReserve == false) && (
                     <button
-                      className={c.IsReserve ? "bg-red-400" : "bg-green-300"}
+                      className={`${
+                        c.IsReserve ? "bg-red-400" : "bg-blue-500"
+                      } py-2 px-8 text-white rounded-sm`}
                       onClick={() => {
                         caller
                           .concertControllerReserveConcert(
@@ -113,8 +115,8 @@ export default function Home() {
             );
           })
         ) : (
-          <div className="w-full bg-yellow-200 py-10 my-2 flex flex-col p-4">
-            Create
+          <div className="w-full bg-white rounded-md border border-gray-200 py-10 my-2 px-8 flex flex-col">
+            <h1 className="text-3xl text-blue-500 mb-6">Create</h1>
             <span className="border-b border-gray-300 w-full"></span>
             <form
               onSubmit={(e) => {
@@ -129,17 +131,27 @@ export default function Home() {
                 );
               }}
             >
-              <div className="flex justify-between gap-4">
+              <div className="flex justify-between gap-4  py-4">
                 <div className="w-full">
-                  <label htmlFor="name">Concert Name</label>
-                  <input className="w-full" required id="name"></input>
+                  <label className="text-xl mt-4" htmlFor="name">
+                    Concert Name
+                  </label>
+                  <input
+                    className="w-full border border-gray-500 mt-4"
+                    placeholder=" Please input concert name"
+                    required
+                    id="name"
+                  ></input>
                 </div>
                 <div className="w-full">
-                  <label htmlFor="seat">Seat</label>
+                  <label className="text-xl mt-4" htmlFor="seat">
+                    Seat
+                  </label>
                   <input
-                    className="w-full"
+                    defaultValue={500}
+                    className="w-full border border-gray-500 mt-4"
                     type="number"
-                    min="0"
+                    min="1"
                     max="10000"
                     step="1"
                     required
@@ -148,12 +160,22 @@ export default function Home() {
                 </div>
               </div>
 
-              <label htmlFor="description">Description</label>
-              <textarea className="w-full" required id="description"></textarea>
+              <label className="text-xl mt-4" htmlFor="description">
+                Description
+              </label>
+              <textarea
+                className="w-full border border-gray-500 mt-4"
+                placeholder=" Please input description"
+                required
+                id="description"
+              ></textarea>
 
-              <div className="bg-orange-300 flex flex-row-reverse">
-                <button type="submit" className="bg-blue-400  px-10">
-                  Save
+              <div className="flex flex-row-reverse">
+                <button
+                  type="submit"
+                  className="bg-blue-500 py-2 px-8 text-white rounded-sm"
+                >
+                  💾 Save
                 </button>
               </div>
             </form>

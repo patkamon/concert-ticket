@@ -7,6 +7,8 @@ import Sidebar from "@/components/Sidebar";
 export default function History() {
   const [role, setRole] = useState<String>("Admin");
   const [history, setHistory] = useState<any[]>([])
+  const [selectHome, setSelectHome] = useState<boolean>(false);
+
 
   const caller = DefaultApiFactory();
 
@@ -23,8 +25,8 @@ export default function History() {
   
 
   return (
-    <div className="flex w-screen">
-      <Sidebar role={role} setRole={setRole} />
+    <div className="flex w-screen bg-gray-50">
+      <Sidebar role={role} setRole={setRole} selectHome={selectHome} setSelectHome={setSelectHome} />
       <div className="flex flex-col w-full mx-10 mt-10">
         <table className="[&_*]:border-2 [&_*]:border-black">
           <thead>
